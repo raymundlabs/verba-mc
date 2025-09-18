@@ -1,0 +1,103 @@
+-- profiles table linked to auth.users
+create table if not exists public.profiles (
+  id uuid primary key references auth.users(id) on delete cascade,
+  role text not null check (role in ('staff','manager')),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+-- keep updated_at fresh
+create or replace function public.set_updated_at()
+returns trigger language plpgsql as $$
+begin
+  new.updated_at = now();
+  return new;
+end; $$;
+
+drop trigger if exists trg_profiles_updated_at on public.profiles;
+create trigger trg_profiles_updated_at
+before update on public.profiles
+for each row execute function public.set_updated_at();
+
+-- Enable RLS
+alter table public.profiles enable row level security;
+
+-- Policies: users can select/update only their own row
+drop policy if exists "Profiles select own" on public.profiles;
+create policy "Profiles select own" on public.profiles
+  for select using ( auth.uid() = id );
+
+drop policy if exists "Profiles upsert own" on public.profiles;
+create policy "Profiles upsert own" on public.profiles
+  for insert with check ( auth.uid() = id );
+
+drop policy if exists "Profiles update own" on public.profiles;
+create policy "Profiles update own" on public.profiles
+  for update using ( auth.uid() = id );
+
+-- Manager override: allow users with manager role to select/update any profile
+-- This uses a helper function to check caller's role
+create or replace function public.is_manager()
+returns boolean language sql security definer set search_path = public as $$
+  select exists (
+    select 1 from public.profiles p where p.id = auth.uid() and p.role = 'manager'
+  );
+$$;
+
+drop policy if exists "Profiles select manager" on public.profiles;
+create policy "Profiles select manager" on public.profiles
+  for select using ( public.is_manager() );
+
+drop policy if exists "Profiles update manager" on public.profiles;
+create policy "Profiles update manager" on public.profiles
+  for update using ( public.is_manager() );
+
+
+  
+
+create table public.leads (
+  id uuid not null default gen_random_uuid (),
+  created_at timestamp with time zone not null default now(),
+  confirmation_number text not null,
+  patient_name text not null,
+  phone text not null,
+  email text null,
+  appointment_date date not null,
+  appointment_time time without time zone not null,
+  primary_concern text null,
+  urgency_level text null,
+  notes text null,
+  status text not null default 'scheduled'::text,
+  metadata jsonb null default '{}'::jsonb,
+  name text null,
+  booking_number text null,
+  updated_at date null,
+  constraint leads_pkey primary key (id)
+) TABLESPACE pg_default;
+
+create index IF not exists leads_confirmation_number_idx on public.leads using btree (confirmation_number) TABLESPACE pg_default;
+
+create index IF not exists leads_phone_idx on public.leads using btree (phone) TABLESPACE pg_default;
+
+create index IF not exists leads_appointment_date_idx on public.leads using btree (appointment_date) TABLESPACE pg_default;
+
+
+create table public.transcripts (
+  id uuid not null default gen_random_uuid (),
+  lead_id uuid not null,
+  content text not null,
+  call_duration integer null,
+  call_start_time timestamp with time zone not null,
+  call_end_time timestamp with time zone not null,
+  created_at timestamp with time zone null default now(),
+  constraint transcripts_pkey primary key (id),
+  constraint fk_lead foreign KEY (lead_id) references leads (id) on delete CASCADE
+) TABLESPACE pg_default;
+
+create index IF not exists idx_transcripts_lead_id on public.transcripts using btree (lead_id) TABLESPACE pg_default;
+
+create index IF not exists idx_transcripts_call_start_time on public.transcripts using btree (call_start_time) TABLESPACE pg_default;
+
+create trigger update_transcripts_updated_at BEFORE
+update on transcripts for EACH row
+execute FUNCTION update_modified_column ();
