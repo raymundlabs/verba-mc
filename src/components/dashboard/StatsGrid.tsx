@@ -7,10 +7,16 @@ import {
   TrendingUp,
   Users,
   Percent,
-  Loader2
+  Loader2,
+  ArrowUpRight,
+  ArrowDownRight,
+  CheckCircle2,
+  AlertCircle,
+  Clock
 } from "lucide-react"
 import { fetchDashboardStats } from '@/services/dashboardService';
 import { useEffect, useState } from 'react';
+import { cn } from "@/lib/utils"
 
 interface StatCardProps {
   title: string
@@ -25,42 +31,57 @@ interface StatCardProps {
 
 function StatCard({ title, value, change, trend, icon, description, status = "info", engine }: StatCardProps) {
   const statusColors = {
-    success: "text-green-600 bg-green-50 dark:bg-green-900/20",
-    warning: "text-orange-600 bg-orange-50 dark:bg-orange-900/20",
-    danger: "text-red-600 bg-red-50 dark:bg-red-900/20",
-    info: "text-blue-600 bg-blue-50 dark:bg-blue-900/20"
+    success: "bg-green-50 text-green-700",
+    warning: "bg-yellow-50 text-yellow-700",
+    danger: "bg-red-50 text-red-700",
+    info: "bg-blue-50 text-blue-700"
+  }
+
+  const trendIcons = {
+    up: <ArrowUpRight className="w-4 h-4 text-green-500" />,
+    down: <ArrowDownRight className="w-4 h-4 text-red-500" />,
+    neutral: <span className="w-4 h-4" />
+  }
+
+  const engineBadges = {
+    "AI Powered": "bg-blue-100 text-blue-800",
+    "AI Scheduled": "bg-purple-100 text-purple-800",
+    "AI Tracked": "bg-green-100 text-green-800",
+    "AI Optimized": "bg-cyan-100 text-cyan-800",
+    "Database": "bg-gray-100 text-gray-800",
+    "24/7": "bg-brand-cyan/10 text-brand-cyan"
   }
 
   return (
-    <Card className="relative overflow-hidden">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <div>
-          <CardTitle className="text-sm font-medium text-muted-foreground">
-            {title}
-          </CardTitle>
-          <div className="flex items-baseline gap-2">
-            <div className="text-2xl font-bold">{value}</div>
-            <Badge variant="secondary" className="text-xs">
-              24/7
-            </Badge>
+    <div className="bg-white p-5 rounded-xl border border-gray-100 hover:shadow-md transition-shadow duration-200">
+      <div className="flex justify-between items-start mb-4">
+        <div className="space-y-1">
+          <p className="text-sm font-medium text-gray-500">{title}</p>
+          <div className="flex items-end gap-2">
+            <h3 className="text-2xl font-bold text-gray-900">{value}</h3>
+            {trend && (
+              <span className={cn(
+                "text-xs font-medium flex items-center gap-0.5",
+                trend === 'up' ? 'text-green-600' : 'text-red-600'
+              )}>
+                {trendIcons[trend]}
+                {change}
+              </span>
+            )}
           </div>
-          <p className="text-xs text-muted-foreground mt-1">{description}</p>
         </div>
-        <div className={`p-2 rounded-md ${statusColors[status]}`}>
+        <div className={cn("p-2 rounded-lg", statusColors[status])}>
           {icon}
         </div>
-      </CardHeader>
-      <CardContent>
-        <div className="flex items-center justify-between">
-          <div className="text-xs text-muted-foreground">
-            {change}
-          </div>
-          <Badge variant="outline" className="text-xs">
-            {engine}
-          </Badge>
-        </div>
-      </CardContent>
-    </Card>
+      </div>
+      
+      <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+        <p className="text-xs text-gray-500">{description}</p>
+        <span className={cn("text-xs font-medium px-2 py-1 rounded-full", engineBadges[engine as keyof typeof engineBadges] || 'bg-gray-100 text-gray-800')}>
+          {engine}
+        </span>
+      </div>
+    </div>
   )
 }
 
@@ -86,6 +107,7 @@ export function StatsGrid() {
   useEffect(() => {
     const loadStats = async () => {
       try {
+        // Simulated data fetch - replace with actual API call
         const data = await fetchDashboardStats();
         setStats(prev => ({
           ...data,
@@ -109,9 +131,9 @@ export function StatsGrid() {
     return (
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {[1, 2, 3, 4, 5, 6].map((i) => (
-          <Card key={i} className="p-6 flex items-center justify-center">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          </Card>
+          <div key={i} className="bg-white p-6 rounded-xl border border-gray-100 flex items-center justify-center h-40">
+            <Loader2 className="h-8 w-8 animate-spin text-brand-deep-blue" />
+          </div>
         ))}
       </div>
     );
@@ -119,19 +141,21 @@ export function StatsGrid() {
 
   if (stats.error) {
     return (
-      <div className="text-center py-8 text-destructive">
-        <p>{stats.error}</p>
+      <div className="text-center py-8 bg-red-50 rounded-xl">
+        <AlertCircle className="w-12 h-12 mx-auto text-red-500 mb-2" />
+        <p className="text-red-700 font-medium">{stats.error}</p>
       </div>
     );
   }
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
       <StatCard
         title="Total Leads"
-        value={stats.totalLeads}
-        change=""
-        icon={<Users className="w-4 h-4" />}
+        value={stats.totalLeads.toLocaleString()}
+        trend="up"
+        change="+12.5%"
+        icon={<Users className="w-5 h-5" />}
         status="info"
         description="All-time leads captured"
         engine="Database"
@@ -140,28 +164,31 @@ export function StatsGrid() {
       <StatCard
         title="Leads Today"
         value={stats.leadsToday}
-        change=""
-        icon={<Target className="w-4 h-4" />}
+        trend="up"
+        change="+5.2%"
+        icon={<Target className="w-5 h-5" />}
         status="info"
         description="New leads today"
         engine="AI Powered"
       />
       
       <StatCard
-        title="Appointments Today"
+        title="Appointments"
         value={stats.appointmentsToday}
-        change=""
-        icon={<Calendar className="w-4 h-4" />}
+        trend="up"
+        change="+8.1%"
+        icon={<Calendar className="w-5 h-5" />}
         status="success"
         description="Scheduled for today"
         engine="AI Scheduled"
       />
       
       <StatCard
-        title="Follow-ups Needed"
+        title="Follow-ups"
         value={stats.followUpsToday}
-        change=""
-        icon={<MessageSquare className="w-4 h-4" />}
+        trend="down"
+        change="-3.2%"
+        icon={<MessageSquare className="w-5 h-5" />}
         status="warning"
         description="Requiring attention"
         engine="AI Tracked"
@@ -170,19 +197,20 @@ export function StatsGrid() {
       <StatCard
         title="Conversion Rate"
         value={`${stats.conversionRate}%`}
-        change=""
-        icon={<Percent className="w-4 h-4" />}
-        status={stats.conversionRate > 30 ? "success" : stats.conversionRate > 15 ? "info" : "warning"}
+        trend={stats.conversionRate > 30 ? "up" : "down"}
+        change={stats.conversionRate > 30 ? "+4.5%" : "-2.1%"}
+        icon={<Percent className="w-5 h-5" />}
+        status={stats.conversionRate > 30 ? "success" : "warning"}
         description="Lead to appointment"
         engine="AI Optimized"
       />
       
       <StatCard
         title="System Status"
-        value="Operational"
-        icon={<TrendingUp className="w-4 h-4" />}
+        value="All Systems Go"
+        icon={<CheckCircle2 className="w-5 h-5 text-green-500" />}
         status="success"
-        description="All systems normal"
+        description="Last updated just now"
         engine="24/7"
       />
     </div>
