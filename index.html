@@ -1,86 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RaymundLab Mission Control</title>
-    <meta name="description" content="RaymundLab Mission Control Center - Real-time monitoring and management" />
-    <meta name="author" content="RaymundLab" />
-    <meta name="theme-color" content="#1a365d" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <link rel="icon" href="/logo-png.PNG" type="image/png" />
 
-    <!-- Open Graph / Facebook -->
-    <meta property="og:title" content="RaymundLab Mission Control" />
-    <meta property="og:description" content="Real-time monitoring and management dashboard for RaymundLab operations" />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://raymundlab.com/mission-control" />
-    <meta property="og:image" content="https://raymundlab.com/images/mission-control-preview.jpg" />
+  <!-- Title and Meta -->
+  <title>Verbadent – AI Voice Solutions for Dental Practices | AI Voice Products & Agents</title>
+  <meta name="description" content="Verbadent is a venture studio and platform creating category-defining AI voice products for dental practices. Empowering clinics and SMEs to scale with AI voice technology." />
+  <meta name="author" content="Verbadent" />
+  <link rel="icon" type="image/png" href="/logo-png.PNG" />
+  <meta name="keywords" content="Dental AI, Voice AI, AI Agents, AI Voice Products, AI Venture Studio, Verbadent, AI Infrastructure" />
 
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@RaymundLab" />
-    <meta name="twitter:title" content="RaymundLab Mission Control" />
-    <meta name="twitter:description" content="Real-time monitoring and management dashboard for RaymundLab operations" />
-    <meta name="twitter:image" content="https://raymundlab.com/images/mission-control-preview.jpg" />
+  <!-- Open Graph -->
+  <meta property="og:title" content="Verbadent AI Voice Venture Studio for Dentistry" />
+  <meta property="og:description" content="We engineer category-leading Voice AI products for dental practices. Explore our ventures and AI infrastructure at Verbadent." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://verbadent.com" />
+  <meta property="og:image" content="https://verbadent.com/OG.PNG" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Verbadent – AI Voice Venture Studio for Dentistry" />
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="alternate icon" href="/favicon.ico" />
-    
-    <!-- Preconnect to external resources -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-    
-    <!-- Mobile App Meta -->
-    <meta name="apple-mobile-web-app-title" content="RaymundLab MC" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    
-    <style>
-      body {
-        margin: 0;
-        padding: 0;
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-        background-color: #0f172a;
-        color: #f8fafc;
-        overflow-x: hidden;
-      }
-      #root {
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-      }
-      .loading-screen {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        width: 100vw;
-        background-color: #0f172a;
-      }
-      .loading-spinner {
-        border: 4px solid rgba(255, 255, 255, 0.1);
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        border-left-color: #3b82f6;
-        animation: spin 1s linear infinite;
-      }
-      @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-      }
-    </style>
-  </head>
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@verbadent" />
+  <meta name="twitter:title" content="Verbadent – AI Voice Venture Studio for Dentistry" />
+  <meta name="twitter:description" content="Verbadent creates AI voice products and agents that drive growth for dental practices." />
+  <meta name="twitter:image" content="https://verbadent.com/OG.PNG" />
+  <meta name="twitter:image:alt" content="Verbadent – AI Voice Venture Studio for Dentistry" />
 
-  <body>
-    <div id="root">
-      <div class="loading-screen">
-        <div class="loading-spinner"></div>
-      </div>
-    </div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Verbadent",
+    "url": "https://verbadent.com",
+    "logo": "https://verbadent.com/logo-png.png",
+    "sameAs": [
+      "https://www.linkedin.com/company/verbadent",
+      "https://twitter.com/verbadent"
+    ],
+    "description": "Verbadent is a Voice AI venture studio and platform creating category-leading AI voice products, agents, and solutions for dental practices."
+  }
+  </script>
+
+  <!-- Structured Data for Products -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Product",
+        "name": "Resodent",
+        "description": "HIPAA-compliant AI assistant for dental clinics. Optimizes patient interactions and workflow.",
+        "url": "https://verbadent.com/products/resodent",
+        "brand": "Verbadent"
+      },
+      {
+        "@type": "Product",
+        "name": "VerbaAssist",
+        "description": "AI answering + booking assistant designed for dental practices. Scales patient leads and operations efficiently.",
+        "url": "https://verbadent.com/products/verbaassist",
+        "brand": "Verbadent"
+      }
+    ]
+  }
+  </script>
+
+  <!-- Structured Data for Founder -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Founder, Verbadent",
+    "jobTitle": "Founder & CEO",
+    "worksFor": {
+      "@type": "Organization",
+      "name": "Verbadent"
+    },
+    "description": "Entrepreneur and AI expert, building category-defining AI voice products and infrastructure for dental practices."
+  }
+  </script>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="/logo-png.PNG" />
+
+</head>
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
 </html>

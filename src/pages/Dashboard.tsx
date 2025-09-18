@@ -13,7 +13,7 @@ export default function Dashboard() {
               <Phone className="w-5 h-5 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold">RaymundLab Revenue Engine</h1>
+              <h1 className="text-3xl font-bold">Verbadent Revenue Engine</h1>
               <p className="text-lg font-medium text-primary">Mission Control Dashboard</p>
             </div>
           </div>

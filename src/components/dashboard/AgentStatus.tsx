@@ -123,7 +123,7 @@ export function AgentStatus() {
           AI Engine Performance
         </CardTitle>
         <CardDescription className="text-muted-foreground">
-          RaymundLab Revenue Engines running 24/7
+          Verbadent Revenue Engines running 24/7
         </CardDescription>
       </CardHeader>
       <CardContent>
